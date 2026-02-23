@@ -408,7 +408,6 @@ Error RendererCompositorRD::ensure_gpu_context(uint32_t p_gpu_index, RenderingDe
 	GPUContext ctx;
 	ctx.gpu_index = p_gpu_index;
 	ctx.device = p_device;
-	ctx.canvas = memnew(RendererCanvasRenderRD());
 
 	RenderingDevice *prev_device = RenderingDevice::get_current_device();
 	RenderingDevice::set_current_device(p_device);
@@ -431,9 +430,15 @@ Error RendererCompositorRD::ensure_gpu_context(uint32_t p_gpu_index, RenderingDe
 	RendererRD::LightStorage::set_current(ctx.light_storage);
 	RendererRD::ParticlesStorage::set_current(ctx.particles_storage);
 	RendererRD::Fog::set_current(ctx.fog);
-	RendererCanvasRender::set_current(ctx.canvas);
 	UniformSetCacheRD::set_current(ctx.uniform_set_cache);
 	FramebufferCacheRD::set_current(ctx.framebuffer_cache);
+
+	// Initialize storage subsystems for this GPU context
+	ctx.texture_storage->_tex_blit_shader_initialize();
+
+	ctx.canvas = memnew(RendererCanvasRenderRD());
+	RendererCanvasRender::set_current(ctx.canvas);
+
 
 	String rendering_method = OS::get_singleton()->get_current_rendering_method();
 	uint64_t textures_per_stage = p_device->limit_get(RD::LIMIT_MAX_TEXTURES_PER_SHADER_STAGE);
