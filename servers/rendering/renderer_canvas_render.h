@@ -557,6 +557,7 @@ public:
 		if (!singleton) {
 			singleton = this;
 		}
+		current = this;
 	}
 	virtual ~RendererCanvasRender() {
 		if (singleton == this) {
