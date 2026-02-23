@@ -1,57 +1,107 @@
-[gd_scene load_steps=3 format=3 uid="uid://demo_main"]
+[gd_scene load_steps=2 format=3 uid="uid://b82xxxx"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_main"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_1"]
-size = Vector3(1, 1, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_1"]
-size = Vector2(2, 2)
-
-[node name="MultiGPUDemo" type="Node3D"]
+[node name="Node" type="Node"]
 script = ExtResource("1_main")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 3, 0)
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "GPU 0 Main Window"
+horizontal_alignment = 1
 
-[node name="MainScene" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
-
-[node name="Cube" type="MeshInstance3D" parent="MainScene"]
-mesh = SubResource("BoxMesh_1")
-skeleton = NodePath("")
-
-[node name="RotatingLight" type="OmniLight3D" parent="MainScene"]
-light_color = Color(0.3, 0.5, 1, 1)
-omni_range = 5.0
-
-[node name="DisplayQuad" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
-mesh = SubResource("QuadMesh_1")
-skeleton = NodePath("")
-
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="Panel" type="Panel" parent="UI"]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 350.0
-offset_bottom = 100.0
-
-[node name="FPSLabel" type="Label" parent="UI/Panel"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 5.0
-offset_right = 330.0
-offset_bottom = 30.0
-
-[node name="GPULabel" type="Label" parent="UI/Panel"]
-layout_mode = 0
-offset_left = 10.0
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_top = 30.0
-offset_right = 330.0
-offset_bottom = 85.0
-autowrap_mode = 2
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer0" type="VBoxContainer" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UI/HBoxContainer/VBoxContainer0"]
+layout_mode = 2
+text = "GPU 0 SubViewport"
+
+[node name="SubViewportContainer0" type="SubViewportContainer" parent="UI/HBoxContainer/VBoxContainer0"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport0" type="SubViewport" parent="UI/HBoxContainer/VBoxContainer0/SubViewportContainer0"]
+handle_input_locally = false
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="UI/HBoxContainer/VBoxContainer0/SubViewportContainer0/SubViewport0"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 4)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI/HBoxContainer/VBoxContainer0/SubViewportContainer0/SubViewport0"]
+
+[node name="ColorRect" type="ColorRect" parent="UI/HBoxContainer/VBoxContainer0/SubViewportContainer0/SubViewport0/CanvasLayer"]
+offset_right = 100.0
+offset_bottom = 40.0
+color = Color(1, 0, 0, 0.5)
+
+[node name="Label" type="Label" parent="UI/HBoxContainer/VBoxContainer0/SubViewportContainer0/SubViewport0/CanvasLayer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "GPU 0 2D"
+
+[node name="VBoxContainer1" type="VBoxContainer" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UI/HBoxContainer/VBoxContainer1"]
+layout_mode = 2
+text = "GPU 1 SubViewport"
+
+[node name="SubViewportContainer1" type="SubViewportContainer" parent="UI/HBoxContainer/VBoxContainer1"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport1" type="SubViewport" parent="UI/HBoxContainer/VBoxContainer1/SubViewportContainer1"]
+handle_input_locally = false
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="UI/HBoxContainer/VBoxContainer1/SubViewportContainer1/SubViewport1"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 4)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI/HBoxContainer/VBoxContainer1/SubViewportContainer1/SubViewport1"]
+
+[node name="ColorRect" type="ColorRect" parent="UI/HBoxContainer/VBoxContainer1/SubViewportContainer1/SubViewport1/CanvasLayer"]
+offset_right = 100.0
+offset_bottom = 40.0
+color = Color(0, 0, 1, 0.5)
+
+[node name="Label" type="Label" parent="UI/HBoxContainer/VBoxContainer1/SubViewportContainer1/SubViewport1/CanvasLayer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "GPU 1 2D"
+
