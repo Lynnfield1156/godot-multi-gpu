@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=3 uid="uid://viewport_demo"]
+
+[ext_resource type="Script" path="res://viewport_demo.gd" id="1_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.2, 0.5, 1, 1)
+
+[node name="MultiGPUViewportDemo" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
+
+[node name="ViewportContainer1" type="SubViewportContainer" parent="."]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 576.0
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="ViewportContainer1"]
+render_target_update_mode = 4
+gpu_index = 0
+
+[node name="Camera3D" type="Camera3D" parent="ViewportContainer1/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="ViewportContainer1/SubViewport"]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 3, 0)
+
+[node name="Cube" type="MeshInstance3D" parent="ViewportContainer1/SubViewport"]
+mesh = SubResource("BoxMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="ViewportContainer2" type="SubViewportContainer" parent="."]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -576.0
+grow_horizontal = 0
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="ViewportContainer2"]
+own_world_3d = true
+render_target_update_mode = 4
+gpu_index = 1
+
+[node name="Camera3D" type="Camera3D" parent="ViewportContainer2/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 400.0
+offset_bottom = 100.0
+
+[node name="FPSLabel" type="Label" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 380.0
+offset_bottom = 30.0
+
+[node name="GPULabel" type="Label" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 30.0
+offset_right = 380.0
+offset_bottom = 85.0
+autowrap_mode = 2

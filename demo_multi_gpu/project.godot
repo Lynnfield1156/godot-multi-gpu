@@ -1,0 +1,21 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Multi-GPU Demo"
+config/description="Demonstrates rendering on multiple GPUs"
+config/features=PackedStringArray("4.3", "Forward Plus")
+run/main_scene="res://viewport_demo.tscn"
+config/scripts=PackedStringArray("GDScript")
+
+[rendering]
+
+renderer/rendering_method="forward_plus"

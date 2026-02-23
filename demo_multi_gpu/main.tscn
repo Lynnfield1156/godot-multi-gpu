@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://demo_main"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_main"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1"]
+size = Vector2(2, 2)
+
+[node name="MultiGPUDemo" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 3, 0)
+
+[node name="MainScene" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
+
+[node name="Cube" type="MeshInstance3D" parent="MainScene"]
+mesh = SubResource("BoxMesh_1")
+skeleton = NodePath("")
+
+[node name="RotatingLight" type="OmniLight3D" parent="MainScene"]
+light_color = Color(0.3, 0.5, 1, 1)
+omni_range = 5.0
+
+[node name="DisplayQuad" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
+mesh = SubResource("QuadMesh_1")
+skeleton = NodePath("")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 350.0
+offset_bottom = 100.0
+
+[node name="FPSLabel" type="Label" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 330.0
+offset_bottom = 30.0
+
+[node name="GPULabel" type="Label" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 30.0
+offset_right = 330.0
+offset_bottom = 85.0
+autowrap_mode = 2
