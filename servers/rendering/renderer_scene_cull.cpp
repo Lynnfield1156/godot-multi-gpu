@@ -3684,6 +3684,7 @@ bool RendererSceneCull::_render_reflection_probe_step(Instance *p_instance, int 
 	InstanceReflectionProbeData *reflection_probe = static_cast<InstanceReflectionProbeData *>(p_instance->base_data);
 	Scenario *scenario = p_instance->scenario;
 	ERR_FAIL_NULL_V(scenario, true);
+	InstanceGPUContextGuard gpu_guard(scenario->gpu_index);
 
 	RenderingServerDefault::redraw_request(); //update, so it updates in editor
 
@@ -3819,6 +3820,7 @@ void RendererSceneCull::render_probes() {
 		SelfList<InstanceVoxelGIData> *next = voxel_gi->next();
 
 		InstanceVoxelGIData *probe = voxel_gi->self();
+		InstanceGPUContextGuard gpu_guard(probe->owner->gpu_index);
 		//Instance *instance_probe = probe->owner;
 
 		//check if probe must be setup, but don't do if on the lighting thread
@@ -4011,6 +4013,7 @@ void RendererSceneCull::render_probes() {
 void RendererSceneCull::render_particle_colliders() {
 	while (heightfield_particle_colliders_update_list.begin()) {
 		Instance *hfpc = *heightfield_particle_colliders_update_list.begin();
+		InstanceGPUContextGuard gpu_guard(hfpc->gpu_index);
 
 		if (hfpc->scenario && hfpc->base_type == RS::INSTANCE_PARTICLES_COLLISION && RSG::particles_storage->particles_collision_is_heightfield(hfpc->base)) {
 			//update heightfield
