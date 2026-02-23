@@ -1575,7 +1575,7 @@ void RendererCanvasRenderRD::CanvasShaderData::set_code(const String &p_code) {
 
 	actions.uniforms = &uniforms;
 
-	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 	MutexLock lock(canvas_singleton->shader.mutex);
 
 	Error err = canvas_singleton->shader.compiler.compile(RS::SHADER_CANVAS_ITEM, code, &actions, path, gen_code);
@@ -1629,20 +1629,20 @@ bool RendererCanvasRenderRD::CanvasShaderData::casts_shadows() const {
 }
 
 RS::ShaderNativeSourceCode RendererCanvasRenderRD::CanvasShaderData::get_native_source_code() const {
-	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 	MutexLock lock(canvas_singleton->shader.mutex);
 	return canvas_singleton->shader.canvas_shader.version_get_native_source_code(version);
 }
 
 Pair<ShaderRD *, RID> RendererCanvasRenderRD::CanvasShaderData::get_native_shader_and_version() const {
-	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 	return { &canvas_singleton->shader.canvas_shader, version };
 }
 
 RID RendererCanvasRenderRD::CanvasShaderData::get_shader(ShaderVariant p_shader_variant, bool p_ubershader) const {
 	if (version.is_valid()) {
 		uint32_t variant_index = p_shader_variant + (p_ubershader ? SHADER_VARIANT_MAX : 0);
-		RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+		RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 		MutexLock lock(canvas_singleton->shader.mutex);
 		return canvas_singleton->shader.canvas_shader.version_get_shader(version, variant_index);
 	} else {
@@ -1667,7 +1667,7 @@ uint64_t RendererCanvasRenderRD::CanvasShaderData::get_vertex_input_mask(ShaderV
 
 bool RendererCanvasRenderRD::CanvasShaderData::is_valid() const {
 	if (version.is_valid()) {
-		RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+		RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 		MutexLock lock(canvas_singleton->shader.mutex);
 		return canvas_singleton->shader.canvas_shader.version_is_valid(version);
 	} else {
@@ -1676,7 +1676,7 @@ bool RendererCanvasRenderRD::CanvasShaderData::is_valid() const {
 }
 
 RendererCanvasRenderRD::CanvasShaderData::CanvasShaderData() {
-	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 	pipeline_hash_map.set_creation_object_and_function(this, &CanvasShaderData::_create_pipeline);
 	pipeline_hash_map.set_compilations(&canvas_singleton->shader.pipeline_compilations[0], &canvas_singleton->shader.mutex);
 }
@@ -1685,7 +1685,7 @@ RendererCanvasRenderRD::CanvasShaderData::~CanvasShaderData() {
 	pipeline_hash_map.clear_pipelines();
 
 	if (version.is_valid()) {
-		RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+		RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 		MutexLock lock(canvas_singleton->shader.mutex);
 		canvas_singleton->shader.canvas_shader.version_free(version);
 	}
@@ -1697,7 +1697,7 @@ RendererRD::MaterialStorage::ShaderData *RendererCanvasRenderRD::_create_shader_
 }
 
 bool RendererCanvasRenderRD::CanvasMaterialData::update_parameters(const HashMap<StringName, Variant> &p_parameters, bool p_uniform_dirty, bool p_textures_dirty) {
-	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 	MutexLock lock(canvas_singleton->shader.mutex);
 	RID shader_to_update = canvas_singleton->shader.canvas_shader.version_get_shader(shader_data->version, 0);
 	bool uniform_set_changed = update_parameters_uniform_set(p_parameters, p_uniform_dirty, p_textures_dirty, shader_data->uniforms, shader_data->ubo_offsets.ptr(), shader_data->texture_uniforms, shader_data->default_texture_params, shader_data->ubo_size, uniform_set, shader_to_update, MATERIAL_UNIFORM_SET, true, false);
@@ -2177,7 +2177,7 @@ void RendererCanvasRenderRD::set_debug_redraw(bool p_enabled, double p_time, con
 }
 
 uint32_t RendererCanvasRenderRD::get_pipeline_compilations(RS::PipelineSource p_source) {
-	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::singleton);
+	RendererCanvasRenderRD *canvas_singleton = static_cast<RendererCanvasRenderRD *>(RendererCanvasRender::get_singleton());
 	MutexLock lock(canvas_singleton->shader.mutex);
 	return shader.pipeline_compilations[p_source];
 }

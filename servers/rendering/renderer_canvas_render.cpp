@@ -32,6 +32,7 @@
 #include "servers/rendering/rendering_server_globals.h"
 
 RendererCanvasRender *RendererCanvasRender::singleton = nullptr;
+thread_local RendererCanvasRender *RendererCanvasRender::current = nullptr;
 
 const Rect2 &RendererCanvasRender::Item::get_rect() const {
 	if (custom_rect || (!rect_dirty && !update_when_visible && skeleton == RID())) {

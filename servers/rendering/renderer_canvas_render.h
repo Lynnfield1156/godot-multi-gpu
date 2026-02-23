@@ -36,6 +36,9 @@
 class RendererCanvasRender {
 public:
 	static RendererCanvasRender *singleton;
+	static thread_local RendererCanvasRender *current;
+	static RendererCanvasRender *get_singleton() { return current ? current : singleton; }
+	static void set_current(RendererCanvasRender *p_current) { current = p_current; }
 
 	enum CanvasRectFlags {
 		CANVAS_RECT_REGION = 1,
@@ -551,10 +554,13 @@ public:
 	virtual uint32_t get_pipeline_compilations(RS::PipelineSource p_source) = 0;
 
 	RendererCanvasRender() {
-		ERR_FAIL_COND_MSG(singleton != nullptr, "A RendererCanvasRender singleton already exists.");
-		singleton = this;
+		if (!singleton) {
+			singleton = this;
+		}
 	}
 	virtual ~RendererCanvasRender() {
-		singleton = nullptr;
+		if (singleton == this) {
+			singleton = nullptr;
+		}
 	}
 };

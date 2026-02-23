@@ -132,6 +132,11 @@ void RendererCompositorRD::begin_frame(double frame_step) {
 	time = Math::fmod(time, time_roll_over);
 
 	canvas->set_time(time);
+	for (KeyValue<uint32_t, GPUContext> &E : gpu_contexts) {
+		if (E.value.canvas) {
+			E.value.canvas->set_time(time);
+		}
+	}
 	scene->set_time(time, frame_step);
 }
 
@@ -403,6 +408,7 @@ Error RendererCompositorRD::ensure_gpu_context(uint32_t p_gpu_index, RenderingDe
 	GPUContext ctx;
 	ctx.gpu_index = p_gpu_index;
 	ctx.device = p_device;
+	ctx.canvas = memnew(RendererCanvasRenderRD());
 
 	RenderingDevice *prev_device = RenderingDevice::get_current_device();
 	RenderingDevice::set_current_device(p_device);
@@ -425,6 +431,7 @@ Error RendererCompositorRD::ensure_gpu_context(uint32_t p_gpu_index, RenderingDe
 	RendererRD::LightStorage::set_current(ctx.light_storage);
 	RendererRD::ParticlesStorage::set_current(ctx.particles_storage);
 	RendererRD::Fog::set_current(ctx.fog);
+	RendererCanvasRender::set_current(ctx.canvas);
 	UniformSetCacheRD::set_current(ctx.uniform_set_cache);
 	FramebufferCacheRD::set_current(ctx.framebuffer_cache);
 
@@ -447,6 +454,7 @@ Error RendererCompositorRD::ensure_gpu_context(uint32_t p_gpu_index, RenderingDe
 	RendererRD::LightStorage::set_current(nullptr);
 	RendererRD::ParticlesStorage::set_current(nullptr);
 	RendererRD::Fog::set_current(nullptr);
+	RendererCanvasRender::set_current(nullptr);
 	RendererSceneRenderRD::set_current(nullptr);
 	UniformSetCacheRD::set_current(nullptr);
 	FramebufferCacheRD::set_current(nullptr);
@@ -507,6 +515,8 @@ bool RendererCompositorRD::bind_gpu_context(uint32_t p_gpu_index) {
 	RSG::light_storage = ctx->light_storage;
 	RSG::particles_storage = ctx->particles_storage;
 	RSG::fog = ctx->fog;
+	RSG::canvas_render = ctx->canvas;
+	RendererCanvasRender::set_current(ctx->canvas);
 	if (ctx->scene) {
 		RSG::gi = ctx->scene->get_gi();
 	}
@@ -541,6 +551,8 @@ void RendererCompositorRD::unbind_gpu_context() {
 	RSG::light_storage = light_storage;
 	RSG::particles_storage = particles_storage;
 	RSG::fog = fog;
+	RSG::canvas_render = canvas;
+	RendererCanvasRender::set_current(nullptr);
 	if (scene) {
 		RSG::gi = scene->get_gi();
 	}
@@ -586,6 +598,9 @@ RendererCompositorRD::~RendererCompositorRD() {
 		}
 		if (ctx.utilities) {
 			memdelete(ctx.utilities);
+		}
+		if (ctx.canvas) {
+			memdelete(ctx.canvas);
 		}
 		if (ctx.framebuffer_cache) {
 			memdelete(ctx.framebuffer_cache);
